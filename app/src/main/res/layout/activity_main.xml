@@ -30,7 +30,7 @@
                 android:id="@+id/main_view"
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
-                android:alpha="1"/>
+                android:background="#000000"/>
 
             <include
                 android:id="@+id/main_include_content"
