@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_slidingview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF">
-
-    <LinearLayout
-        android:layout_width="200dp"
-        android:layout_height="match_parent">
-
-        <include
-            android:id="@+id/main_include_leftitem"
-            layout="@layout/layout_leftitem"/>
-
-    </LinearLayout>
 
     <com.example.sliding.mainview.SlidingView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
@@ -26,11 +11,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <View
-                android:id="@+id/main_view"
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:alpha="0"/>
+            <include
+                android:id="@+id/main_include_leftitem"
+                layout="@layout/layout_leftitem"/>
 
             <include
                 android:id="@+id/main_include_content"
@@ -38,8 +21,6 @@
         </LinearLayout>
 
     </com.example.sliding.mainview.SlidingView>
-
-</RelativeLayout>
 
 <!--
     <LinearLayout

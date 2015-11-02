@@ -10,9 +10,11 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 /**
  * Created by bingoo on 2015/10/30.
@@ -20,7 +22,7 @@ import android.widget.RelativeLayout;
 public class SlidingView extends HorizontalScrollView {
 
     private int menuWidth;
-    private int menuRightPadding = 100;
+    private int menuRightPadding;
     private int halfMenuWidth;
     private int screenWidth;//屏幕宽度
     private VelocityTracker vt = null;
@@ -28,7 +30,7 @@ public class SlidingView extends HorizontalScrollView {
     private DisplayMetrics dm;
     private WindowManager wm;
     private ViewGroup menu;
-    private View alphView;
+    private ViewGroup contentLayout;
 
     public SlidingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -67,8 +69,8 @@ public class SlidingView extends HorizontalScrollView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         LinearLayout ll = (LinearLayout)getChildAt(0);
-        alphView = (View)ll.getChildAt(0);
-        LinearLayout contentLayout = (LinearLayout)ll.getChildAt(1);
+        menu = (ViewGroup)ll.getChildAt(0);
+        contentLayout = (ViewGroup)ll.getChildAt(1);
         LinearLayout.LayoutParams contentll = new LinearLayout.LayoutParams(
                 this.screenWidth,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -79,10 +81,11 @@ public class SlidingView extends HorizontalScrollView {
          *  dp转成px
          */
 
+        menuRightPadding = menu.getWidth();
         menuRightPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 menuRightPadding, contentLayout.getResources().getDisplayMetrics());
 
-        menuWidth = alphView.getWidth();
+        menuWidth = menu.getWidth();
         halfMenuWidth = menuWidth/2;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -119,10 +122,8 @@ public class SlidingView extends HorizontalScrollView {
                  * 就是当前view的左上角相对于母视图的左上角的X轴偏移量。
                  */
                 if (scrollX > halfMenuWidth){
-                    alphView.setVisibility(View.VISIBLE);
                     this.smoothScrollTo(menuWidth, 0);
                 }else{
-                    alphView.setVisibility(View.INVISIBLE);
                     this.smoothScrollTo(0,0);
                 }
                 return true;
@@ -132,6 +133,8 @@ public class SlidingView extends HorizontalScrollView {
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-
+        super.onScrollChanged(l,t,oldl,oldt);
+        float scale = 1 * 1.0f / menuWidth;
+        menu.setTranslationX(menuWidth * scale);
     }
 }

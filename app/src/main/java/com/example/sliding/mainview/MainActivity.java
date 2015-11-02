@@ -22,12 +22,5 @@ public class MainActivity extends Activity {
         leftItemView = inflater.inflate(R.layout.layout_leftitem, null);
         contentView = inflater.inflate(R.layout.layout_content, null);
 
-        button = (Button) leftItemView.findViewById(R.id.leftitem_mode_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"click",Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }
