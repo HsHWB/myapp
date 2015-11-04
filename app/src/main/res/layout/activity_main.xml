@@ -1,49 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<com.example.sliding.mainview.SlidingView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:scrollbars="none"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.example.sliding.mainview.SlidingView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:id="@+id/main_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:fillViewport="true"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <include
-                android:id="@+id/main_include_leftitem"
-                layout="@layout/layout_leftitem"/>
+        <include layout="@layout/layout_leftitem"/>
 
-            <include
-                android:id="@+id/main_include_content"
-                layout="@layout/layout_content"/>
-        </LinearLayout>
-
-    </com.example.sliding.mainview.SlidingView>
-
-<!--
-    <LinearLayout
-        android:layout_width="200dp"
-        android:layout_height="match_parent">
-
-        <include
-            android:id="@+id/main_include_leftitem"
-            layout="@layout/layout_leftitem"/>
+        <include layout="@layout/layout_content"/>
 
     </LinearLayout>
-<com.example.sliding.mainview.SlidingView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <View
-            android:id="@+id/main_view"
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
-            android:alpha="1"/>
-
-        <include
-            android:id="@+id/main_include_content"
-            layout="@layout/layout_content"/>
-
-    </com.example.sliding.mainview.SlidingView>-->
+</com.example.sliding.mainview.SlidingView>

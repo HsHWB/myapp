@@ -2,51 +2,62 @@ package com.example.sliding.mainview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 /**
- * Created by bingoo on 2015/10/30.
+ * Created by bingoo on 2015/11/3.
  */
 public class SlidingView extends HorizontalScrollView {
 
-    private int menuWidth;
-    private int menuRightPadding;
-    private int halfMenuWidth;
-    private int screenWidth;//屏幕宽度
-    private VelocityTracker vt = null;
     private Context mContext;
-    private DisplayMetrics dm;
-    private WindowManager wm;
-    private ViewGroup menu;
-    private ViewGroup contentLayout;
+    private ViewGroup leftItemView;
+    private ViewGroup contentView;
+    private LinearLayout mainLinear;
+    private ListViewForScrollView mListView;
+    private float screenWidth;
+    private float screenHeight;
+    private int menuWidth;
+    private boolean menuState = false;
 
     public SlidingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
-
-        dm = new DisplayMetrics();
-        wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(dm);
-        this.screenWidth = dm.widthPixels;
-
-
-
+        this.screenHeight = WindowsUtlls.getWindowHeight(context);
+        this.screenWidth = WindowsUtlls.getWindowWidth(context);
     }
 
     /**
-     * 定义view在父布局中的位置
+     * 定义view的大小
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        /**
+         * 获取view对象
+         */
+        mainLinear = (LinearLayout)this.getChildAt(0);
+        leftItemView = (ViewGroup) mainLinear.getChildAt(0);
+        contentView = (ViewGroup) mainLinear.getChildAt(1);
+        menuWidth = leftItemView.getWidth();
+        mListView = (ListViewForScrollView) contentView.findViewById(R.id.content_listview);
+        mListView.setAdapter(new ContentListAdapter(mContext));
+        /**
+         * contentView宽度设置为屏幕宽度
+         */
+        LinearLayout.LayoutParams contentViewll = new LinearLayout.LayoutParams(
+                (int) this.screenWidth,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        contentView.setLayoutParams(contentViewll);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    /**
+     * 定义在父布局中的位置
      * @param changed
      * @param l
      * @param t
@@ -55,86 +66,67 @@ public class SlidingView extends HorizontalScrollView {
      */
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
-        this.scrollTo(menuWidth, 0);
+        menuClose();
         super.onLayout(changed, l, t, r, b);
     }
 
     /**
-     * 定义view的长宽，大小
-     * @param widthMeasureSpec
-     * @param heightMeasureSpec
+     * action_up:
+     *
+     * @param ev
+     * @return
      */
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        LinearLayout ll = (LinearLayout)getChildAt(0);
-        menu = (ViewGroup)ll.getChildAt(0);
-        contentLayout = (ViewGroup)ll.getChildAt(1);
-        LinearLayout.LayoutParams contentll = new LinearLayout.LayoutParams(
-                this.screenWidth,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        contentLayout.setLayoutParams(contentll);
-
-        /**
-         *  dp转成px
-         */
-
-        menuRightPadding = menu.getWidth();
-        menuRightPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                menuRightPadding, contentLayout.getResources().getDisplayMetrics());
-
-        menuWidth = menu.getWidth();
-        halfMenuWidth = menuWidth/2;
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
         int action = ev.getAction();
         switch (action){
-
-//            case MotionEvent.ACTION_DOWN:
-//                if (vt == null){
-//                    vt = VelocityTracker.obtain();
-//                }else {
-//                    vt.clear();
-//                }
-//                vt.addMovement(ev);
-//                break;
-//
-//            case MotionEvent.ACTION_MOVE:
-//                vt.addMovement(ev);
-//                //代表的是监测每1000毫秒手指移动的距离（像素）即m/px，这是用来控制vt的单位，
-//                // 若括号内为1，则代表1毫秒手指移动过的像素数即ms/px
-//                vt.computeCurrentVelocity(100);
-//                //这里x为正则代表手指向右滑动，为负则代表手指向左滑动，y的比较特殊，
-//                // 为正则代表手指向下滑动，为负则代表手指向上滑动
-//                Log.i("vt X",String.valueOf(vt.getXVelocity()));
-//                break;
             case MotionEvent.ACTION_UP:
-                int scrollX = getScrollX();
-                /**
-                 * getScrollX(): x - (左滑为负数，右滑为正数)
-                 * 就是当前view的左上角相对于母视图的左上角的X轴偏移量。
-                 */
-                if (scrollX > halfMenuWidth){
-                    this.smoothScrollTo(menuWidth, 0);
-                }else{
-                    this.smoothScrollTo(0,0);
+                int xScroll = getScrollX();
+                //右拉，meun为close时，触发
+                if (xScroll > menuWidth/2 *1.5 && !menuState){
+                    menuClose();
+                }
+                //左拉,menu为open时，触发
+                else if (xScroll <= menuWidth/2 *1.5  && !menuState){
+                    menuOpen();
+                }
+                else if (xScroll <= menuWidth/4  && menuState){
+                    menuOpen();
+                }
+                else if (xScroll > menuWidth/4  && menuState){
+                    menuClose();
                 }
                 return true;
         }
+
         return super.onTouchEvent(ev);
     }
 
+    /**
+     * 滑动过程中的处理
+     * @param l
+     * @param t
+     * @param oldl
+     * @param oldt
+     */
     @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l,t,oldl,oldt);
-        float scale = 1 * 1.0f / menuWidth;
-        menu.setTranslationX(menuWidth * scale);
+    protected void onScrollChanged(int l, int t, int oldl, int oldt){
+        super.onScrollChanged(l, t, oldl, oldt);
+        float scale = l * 1.0f / menuWidth;
+        leftItemView.setTranslationX(menuWidth * scale);
+    }
+
+    /**
+     * menu的状态和动作
+     */
+    private void menuOpen(){
+        super.smoothScrollTo(0,0);
+        menuState = true;
+    }
+
+    private void menuClose(){
+        super.smoothScrollTo(menuWidth,0);
+        menuState = false;
     }
 }
