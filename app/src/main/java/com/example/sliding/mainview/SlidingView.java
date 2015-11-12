@@ -2,10 +2,14 @@ package com.example.sliding.mainview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by bingoo on 2015/11/3.
@@ -42,9 +46,12 @@ public class SlidingView extends HorizontalScrollView {
         mainLinear = (LinearLayout)this.getChildAt(0);
         leftItemView = (ViewGroup) mainLinear.getChildAt(0);
         contentView = (ViewGroup) mainLinear.getChildAt(1);
+
         menuWidth = leftItemView.getWidth();
         mListView = (ListViewForScrollView) contentView.findViewById(R.id.content_listview);
         mListView.setAdapter(new ContentListAdapter(mContext));
+
+        MainActivity.setSlidingCoverButtonSize(menuWidth);
         /**
          * contentView宽度设置为屏幕宽度
          */
@@ -120,13 +127,16 @@ public class SlidingView extends HorizontalScrollView {
     /**
      * menu的状态和动作
      */
-    private void menuOpen(){
-        super.smoothScrollTo(0,0);
+    public void menuOpen(){
+        super.smoothScrollTo(0, 0);
+        MainActivity.setSlidingCoverButtonOn();
         menuState = true;
     }
 
-    private void menuClose(){
-        super.smoothScrollTo(menuWidth,0);
+    public void menuClose(){
+        super.smoothScrollTo(menuWidth, 0);
+        MainActivity.setSlidingCoverButtonClose();
         menuState = false;
     }
+
 }
