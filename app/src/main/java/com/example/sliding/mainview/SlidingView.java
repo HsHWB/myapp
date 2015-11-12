@@ -60,6 +60,16 @@ public class SlidingView extends HorizontalScrollView {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
         contentView.setLayoutParams(contentViewll);
+
+        contentView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (menuState){
+                    menuClose();
+                }
+            }
+        });
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -87,21 +97,19 @@ public class SlidingView extends HorizontalScrollView {
     public boolean onTouchEvent(MotionEvent ev) {
 
         int action = ev.getAction();
-        switch (action){
+        switch (action) {
             case MotionEvent.ACTION_UP:
                 int xScroll = getScrollX();
                 //右拉，meun为close时，触发
-                if (xScroll > menuWidth/2 *1.5 && !menuState){
+                if (xScroll > menuWidth / 2 * 1.5 && !menuState) {
                     menuClose();
                 }
                 //左拉,menu为open时，触发
-                else if (xScroll <= menuWidth/2 *1.5  && !menuState){
+                else if (xScroll <= menuWidth / 2 * 1.5 && !menuState) {
                     menuOpen();
-                }
-                else if (xScroll <= menuWidth/4  && menuState){
+                } else if (xScroll <= menuWidth / 4 && menuState) {
                     menuOpen();
-                }
-                else if (xScroll > menuWidth/4  && menuState){
+                } else if (xScroll > menuWidth / 4 && menuState) {
                     menuClose();
                 }
                 return true;
@@ -129,14 +137,15 @@ public class SlidingView extends HorizontalScrollView {
      */
     public void menuOpen(){
         super.smoothScrollTo(0, 0);
-        MainActivity.setSlidingCoverButtonOn();
+        mListView.setEnabled(false);
+//        MainActivity.setSlidingCoverButtonOn();
         menuState = true;
     }
 
     public void menuClose(){
         super.smoothScrollTo(menuWidth, 0);
-        MainActivity.setSlidingCoverButtonClose();
+        mListView.setEnabled(true);
+//        MainActivity.setSlidingCoverButtonClose();
         menuState = false;
     }
-
 }
