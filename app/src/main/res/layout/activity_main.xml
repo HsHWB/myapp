@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,26 +9,46 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="false">
-        <LinearLayout
-            android:id="@+id/main_linearlayout"
+        <RelativeLayout
+            android:id="@+id/main_relativelayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/layout_leftitem"/>
+            <LinearLayout
+                android:id="@+id/main_linearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <include layout="@layout/layout_leftitem"/>
+
+                <include layout="@layout/layout_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/view_linearlayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:visibility="gone">
+                <View
+                    android:id="@+id/main_cover_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:alpha="1" />
+            </LinearLayout>
 
 
-            <include layout="@layout/layout_content"/>
-
-        </LinearLayout>
+        </RelativeLayout>
     </com.example.sliding.mainview.SlidingView>
 
-    <Button
-        android:id="@+id/sliding_cover_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha="0"
-        android:visibility="gone"/>
 
-</RelativeLayout>
+</LinearLayout>
 
+<!--            <Button
+                android:id="@+id/sliding_cover_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0"
+                android:visibility="gone"/>-->

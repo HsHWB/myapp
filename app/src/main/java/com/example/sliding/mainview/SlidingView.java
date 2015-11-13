@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -19,18 +20,25 @@ public class SlidingView extends HorizontalScrollView {
     private Context mContext;
     private ViewGroup leftItemView;
     private ViewGroup contentView;
+    private RelativeLayout slidingRelative;
     private LinearLayout mainLinear;
+    private LinearLayout viewLinear;
+
     private ListViewForScrollView mListView;
+    private View slidingCoverView;
+
     private float screenWidth;
     private float screenHeight;
     private int menuWidth;
     private boolean menuState = false;
+    private boolean isFirst = true;
 
     public SlidingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
         this.screenHeight = WindowsUtlls.getWindowHeight(context);
         this.screenWidth = WindowsUtlls.getWindowWidth(context);
+        this.isFirst = true;
     }
 
     /**
@@ -43,15 +51,18 @@ public class SlidingView extends HorizontalScrollView {
         /**
          * 获取view对象
          */
-        mainLinear = (LinearLayout)this.getChildAt(0);
+        slidingRelative = (RelativeLayout)this.getChildAt(0);
+        mainLinear = (LinearLayout) slidingRelative.getChildAt(0);
         leftItemView = (ViewGroup) mainLinear.getChildAt(0);
         contentView = (ViewGroup) mainLinear.getChildAt(1);
+        viewLinear = (LinearLayout) slidingRelative.getChildAt(1);
+        slidingCoverView = viewLinear.getChildAt(0);
 
         menuWidth = leftItemView.getWidth();
         mListView = (ListViewForScrollView) contentView.findViewById(R.id.content_listview);
         mListView.setAdapter(new ContentListAdapter(mContext));
 
-        MainActivity.setSlidingCoverButtonSize(menuWidth);
+//        MainActivity.setSlidingCoverButtonSize(menuWidth);
         /**
          * contentView宽度设置为屏幕宽度
          */
@@ -60,6 +71,27 @@ public class SlidingView extends HorizontalScrollView {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
         contentView.setLayoutParams(contentViewll);
+
+        /**
+         * 覆盖view
+         */
+        RelativeLayout.LayoutParams coverViewll = new RelativeLayout.LayoutParams(
+                (int) screenWidth - menuWidth,
+                (int)(screenHeight)
+        );
+//        coverViewll.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        viewLinear.setLayoutParams(coverViewll);
+        viewLinear.setX((int) menuWidth);
+
+        viewLinear.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (menuState){
+                    menuClose();
+                }
+            }
+        });
+
 
         contentView.setOnClickListener(new OnClickListener() {
             @Override
@@ -73,6 +105,11 @@ public class SlidingView extends HorizontalScrollView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
     /**
      * 定义在父布局中的位置
      * @param changed
@@ -83,7 +120,9 @@ public class SlidingView extends HorizontalScrollView {
      */
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        menuClose();
+        if (isFirst) {
+            menuClose();
+        }
         super.onLayout(changed, l, t, r, b);
     }
 
@@ -137,7 +176,9 @@ public class SlidingView extends HorizontalScrollView {
      */
     public void menuOpen(){
         super.smoothScrollTo(0, 0);
+        isFirst = false;
         mListView.setEnabled(false);
+        viewLinear.setVisibility(View.VISIBLE);
 //        MainActivity.setSlidingCoverButtonOn();
         menuState = true;
     }
@@ -145,6 +186,7 @@ public class SlidingView extends HorizontalScrollView {
     public void menuClose(){
         super.smoothScrollTo(menuWidth, 0);
         mListView.setEnabled(true);
+        viewLinear.setVisibility(View.GONE);
 //        MainActivity.setSlidingCoverButtonClose();
         menuState = false;
     }

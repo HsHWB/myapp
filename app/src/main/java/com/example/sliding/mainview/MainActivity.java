@@ -23,45 +23,8 @@ public class MainActivity extends Activity {
         screenHeight = WindowsUtlls.getWindowHeight(getApplicationContext());
         screenWidth = WindowsUtlls.getWindowWidth(getApplicationContext());
 
-        initView();
+//        initView();
     }
 
-    private void initView(){
-        slidingView = (SlidingView) this.findViewById(R.id.main_slidingview);
 
-        slidingCoverButton = (Button) this.findViewById(R.id.sliding_cover_button);
-
-        slidingCoverButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                slidingView.menuClose();
-            }
-        });
-        slidingCoverButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return true;
-            }
-        });
-    }
-
-    public static void setSlidingCoverButtonSize(int menuWidth){
-        /**
-         * button
-         */
-        RelativeLayout.LayoutParams buttonViewll = new RelativeLayout.LayoutParams(
-                (int) screenWidth - menuWidth,
-                (int)(screenHeight+1)
-        );
-        buttonViewll.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        slidingCoverButton.setLayoutParams(buttonViewll);
-    }
-
-    public static void setSlidingCoverButtonOn() {
-        slidingCoverButton.setVisibility(View.VISIBLE);
-    }
-
-    public static void setSlidingCoverButtonClose() {
-        slidingCoverButton.setVisibility(View.GONE);
-    }
 }
