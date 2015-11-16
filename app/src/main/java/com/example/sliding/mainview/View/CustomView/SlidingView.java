@@ -1,5 +1,6 @@
 package com.example.sliding.mainview.View.CustomView;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -27,6 +28,8 @@ public class SlidingView extends HorizontalScrollView {
 
     private ListViewForScrollView mListView;
     private View slidingCoverView;
+    private ObjectAnimator animatorOpen;
+    private ObjectAnimator animatorClose;
 
     private float screenWidth;
     private float screenHeight;
@@ -85,7 +88,7 @@ public class SlidingView extends HorizontalScrollView {
         viewLinear.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (menuState){
+                if (menuState) {
                     menuClose();
                 }
             }
@@ -95,11 +98,12 @@ public class SlidingView extends HorizontalScrollView {
         contentView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (menuState){
+                if (menuState) {
                     menuClose();
                 }
             }
         });
+
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -174,27 +178,26 @@ public class SlidingView extends HorizontalScrollView {
      * menu的状态和动作
      */
     public void menuOpen(){
-        super.smoothScrollTo(0, 0);
+        /**
+         * 动画实现缓慢滑动
+         */
+        animatorOpen = ObjectAnimator.ofInt(this, "scrollX", getScrollX(),0);
+        animatorOpen.setDuration(300);
+        animatorOpen.start();
+
         isFirst = false;
         mListView.setEnabled(false);
-//        viewLinear.setVisibility(View.VISIBLE);
         menuState = true;
+        //        viewLinear.setVisibility(View.VISIBLE);
     }
 
     public void menuClose(){
-        super.smoothScrollTo(menuWidth, 0);
+        animatorClose = ObjectAnimator.ofInt(this, "scrollX", getScrollX(),menuWidth);
+        animatorClose.setDuration(300);
+        animatorClose.start();
+
         mListView.setEnabled(true);
-//        viewLinear.setVisibility(View.GONE);
         menuState = false;
-    }
-
-    /**
-     * 滑动事件,速度为默认的1/4
-     */
-
-    @Override
-    public void fling(int velocityX) {
-        super.fling(velocityX/10);
-
+        //        viewLinear.setVisibility(View.GONE);
     }
 }
