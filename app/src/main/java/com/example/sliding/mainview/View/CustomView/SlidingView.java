@@ -1,16 +1,17 @@
-package com.example.sliding.mainview;
+package com.example.sliding.mainview.View.CustomView;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.example.sliding.mainview.View.Adapter.ContentListAdapter;
+import com.example.sliding.mainview.R;
+import com.example.sliding.mainview.Utils.WindowsUtils;
 
 /**
  * Created by bingoo on 2015/11/3.
@@ -36,8 +37,8 @@ public class SlidingView extends HorizontalScrollView {
     public SlidingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
-        this.screenHeight = WindowsUtlls.getWindowHeight(context);
-        this.screenWidth = WindowsUtlls.getWindowWidth(context);
+        this.screenHeight = WindowsUtils.getWindowHeight(context);
+        this.screenWidth = WindowsUtils.getWindowWidth(context);
         this.isFirst = true;
     }
 
@@ -62,7 +63,6 @@ public class SlidingView extends HorizontalScrollView {
         mListView = (ListViewForScrollView) contentView.findViewById(R.id.content_listview);
         mListView.setAdapter(new ContentListAdapter(mContext));
 
-//        MainActivity.setSlidingCoverButtonSize(menuWidth);
         /**
          * contentView宽度设置为屏幕宽度
          */
@@ -79,9 +79,8 @@ public class SlidingView extends HorizontalScrollView {
                 (int) screenWidth - menuWidth,
                 (int)(screenHeight)
         );
-//        coverViewll.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         viewLinear.setLayoutParams(coverViewll);
-        viewLinear.setX((int) menuWidth);
+        viewLinear.setX(menuWidth);
 
         viewLinear.setOnClickListener(new OnClickListener() {
             @Override
@@ -178,16 +177,24 @@ public class SlidingView extends HorizontalScrollView {
         super.smoothScrollTo(0, 0);
         isFirst = false;
         mListView.setEnabled(false);
-        viewLinear.setVisibility(View.VISIBLE);
-//        MainActivity.setSlidingCoverButtonOn();
+//        viewLinear.setVisibility(View.VISIBLE);
         menuState = true;
     }
 
     public void menuClose(){
         super.smoothScrollTo(menuWidth, 0);
         mListView.setEnabled(true);
-        viewLinear.setVisibility(View.GONE);
-//        MainActivity.setSlidingCoverButtonClose();
+//        viewLinear.setVisibility(View.GONE);
         menuState = false;
+    }
+
+    /**
+     * 滑动事件,速度为默认的1/4
+     */
+
+    @Override
+    public void fling(int velocityX) {
+        super.fling(velocityX/10);
+
     }
 }

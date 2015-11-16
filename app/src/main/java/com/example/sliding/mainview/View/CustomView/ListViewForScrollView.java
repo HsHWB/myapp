@@ -1,4 +1,4 @@
-package com.example.sliding.mainview;
+package com.example.sliding.mainview.View.CustomView;
 
 import android.content.Context;
 import android.util.AttributeSet;

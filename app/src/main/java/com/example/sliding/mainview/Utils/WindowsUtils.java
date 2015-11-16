@@ -1,4 +1,4 @@
-package com.example.sliding.mainview;
+package com.example.sliding.mainview.Utils;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -7,10 +7,10 @@ import android.view.WindowManager;
 /**
  * Created by bingoo on 2015/11/3.
  */
-public class WindowsUtlls {
+public class WindowsUtils {
 
 
-    public WindowsUtlls(){
+    public WindowsUtils(){
     }
 
     /**
